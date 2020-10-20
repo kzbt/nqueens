@@ -1,5 +1,7 @@
 package com.compilerworks.nqueens;
 
+import java.util.List;
+
 public class Nqueens {
 
   public static void main(String[] args) {
@@ -18,5 +20,26 @@ public class Nqueens {
     }
 
     List<List<Integer>> solutions = new Solver(n).solve();
+    prettyPrintSolutions(solutions);
+  }
+
+  public static void prettyPrintSolutions(List<List<Integer>> solutions) {
+    System.out.printf("Found %d solutions%n", solutions.size());
+
+    for (List<Integer> solution : solutions) {
+
+      StringBuilder solutionStr = new StringBuilder(solution.toString()).append("\n");
+
+      for (int row = 0; row < solution.size(); row++) {
+        int col = solution.get(row);
+
+        StringBuilder rowStr = new StringBuilder("_".repeat(solution.size()));
+        rowStr.setCharAt(col, 'X');
+        solutionStr.append(rowStr).append("\n");
+      }
+
+      System.out.println();
+      System.out.println(solutionStr);
+    }
   }
 }
