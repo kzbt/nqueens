@@ -1,7 +1,6 @@
 package com.compilerworks.nqueens;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,27 +10,19 @@ import java.util.stream.IntStream;
 public class Solver {
 
   private final int n;
-  private final int[][] board;
-
-  private final Set<List<Integer>> solutions = new HashSet<>();
+  private final List<List<Integer>> solutions = new ArrayList<>();
 
   public Solver(int n) {
     this.n = n;
-    this.board = new int[this.n][this.n];
-
-    for (int[] row : this.board) {
-      Arrays.fill(row, 0);
-    }
   }
 
-  public void solve() {
+  public List<List<Integer>> solve() {
     for (int column = 0; column < this.n; column++) {
       List<Integer> placements = new ArrayList<>(List.of(column));
       solve(this.getAvailableColsOnNextRow(placements), placements);
     }
 
-    System.out.println("Found " + this.solutions.size() + " solutions");
-    System.out.println(this.solutions);
+    return this.solutions;
   }
 
   private void solve(Set<Integer> availableColumns, List<Integer> placements) {
@@ -86,9 +77,6 @@ public class Solver {
 
     Set<Integer> allColumns = IntStream.range(0, this.n).boxed().collect(Collectors.toSet());
     allColumns.removeAll(bannedColumns);
-    System.out.println("Placed: " + columnsPlaced);
-    System.out.println("Banned: " + bannedColumns);
-    System.out.println("Available: " + allColumns);
     return allColumns;
   }
 
