@@ -31,7 +31,7 @@ public class Solver {
     }
 
     System.out.println("Found " + this.solutions.size() + " solutions");
-//    System.out.println(this.solutions);
+    System.out.println(this.solutions);
   }
 
   private void solve(Set<Integer> availableColumns, List<Integer> placements) {
@@ -82,11 +82,52 @@ public class Solver {
       bannedColumns.add(diagonal2);
     }
 
+    banColumnsInStraightLine(columnsPlaced, nextRow, bannedColumns);
+
     Set<Integer> allColumns = IntStream.range(0, this.n).boxed().collect(Collectors.toSet());
     allColumns.removeAll(bannedColumns);
-//    System.out.println("Placed: " + columnsPlaced);
-//    System.out.println("Banned: " + bannedColumns);
-//    System.out.println("Available: " + allColumns);
+    System.out.println("Placed: " + columnsPlaced);
+    System.out.println("Banned: " + bannedColumns);
+    System.out.println("Available: " + allColumns);
     return allColumns;
+  }
+
+  private void banColumnsInStraightLine(
+      List<Integer> columnsPlaced,
+      int targetRow,
+      Set<Integer> bannedColumns
+  ) {
+    // For every pair of columns we have already placed,
+    // check if the target row contains a column that could be in a straight line
+    // with the selected pair.
+    for (int row1 = 0; row1 < columnsPlaced.size(); row1++) {
+      int col1 = columnsPlaced.get(row1);
+
+      for (int row2 = row1 + 1; row2 < columnsPlaced.size(); row2++) {
+        int col2 = columnsPlaced.get(row2);
+
+        for (int targetCol = 0; targetCol < this.n; targetCol++) {
+
+          // Renaming variables to be clear about the formula used for three points named
+          // A(x,y) B(x,y) C(x,y)
+          // Absolute of (Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)) / 2
+          // should be zero for three points to be in straight line
+
+          int ax = row1;
+          int ay = col1;
+
+          int bx = row2;
+          int by = col2;
+
+          int cx = targetRow;
+          int cy = targetCol;
+
+          double area = ((ax * (by - cy)) + (bx * (cy - ay)) + (cx * (ay - by))) / 2.0;
+          if (Math.abs(area) == 0.0) {
+            bannedColumns.add(targetCol);
+          }
+        }
+      }
+    }
   }
 }
